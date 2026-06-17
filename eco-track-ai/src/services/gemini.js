@@ -4,30 +4,38 @@ const PRIMARY_MODEL = "gemini-2.5-flash";
 const FALLBACK_MODEL = "gemini-2.5-flash-lite";
 
 const buildPrompt = (carbonScore, carKm, electricityUnits, diet) => `
-You are a sustainability expert.
+You are an AI Sustainability Coach.
 
 User Data:
 
-Monthly Car Travel:
-${carKm} km
-
-Electricity Usage:
-${electricityUnits} units
-
-Diet:
-${diet}
+Car Travel: ${carKm} km
+Electricity: ${electricityUnits} units
+Diet: ${diet}
 
 Total Carbon Footprint:
 ${carbonScore} kg CO₂
 
-Provide:
+Return ONLY in this format:
 
-1. Personalized analysis
-2. Top emission source
-3. 5 practical recommendations
-4. Estimated reduction potential
+SUSTAINABILITY SCORE:
+[number out of 100]
 
-Keep response professional and concise.
+MAIN EMISSION SOURCE:
+[max contributor]
+
+TOP 3 RECOMMENDATIONS:
+• recommendation 1
+• recommendation 2
+• recommendation 3
+
+ESTIMATED REDUCTION:
+[number] kg CO₂/month
+
+SUGGESTED GOAL:
+[target footprint]
+
+Keep response under 200 words.
+Do not use headings like analysis, explanation, conclusion.
 `;
 
 const generateAdviceWithModel = async (genAI, modelName, prompt) => {
