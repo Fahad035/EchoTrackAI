@@ -10,6 +10,7 @@ import {
   Cell
 } from "recharts";
 import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 const StatCard = ({ icon, label, value, unit, accent }) => (
   <div className={`theme-surface relative overflow-hidden rounded-[1.75rem] p-6 shadow-2xl transition-all duration-300 hover:-translate-y-1 ${accent}`}>
@@ -76,7 +77,9 @@ function Dashboard() {
   const potentialReduction = 42;
 
   return (
-    <div className="relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+      <Navbar />
+      <div className="px-4 py-6 sm:px-6 lg:px-8">
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute left-8 top-10 h-80 w-80 rounded-full bg-emerald-500/10 blur-3xl animate-float" />
         <div className="absolute right-0 top-1/3 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl animate-float" style={{ animationDelay: "1s" }} />
@@ -91,10 +94,10 @@ function Dashboard() {
                 Live sustainability overview
               </div>
               <h1 className="mt-5 max-w-4xl text-4xl font-black tracking-tight theme-text sm:text-5xl lg:text-6xl">
-                A hackathon-ready sustainability dashboard with a clear story.
+                Your Personal Sustainability Command Center
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-7 theme-muted sm:text-lg">
-                See your monthly footprint, understand the biggest driver, and present a product that feels polished enough for judges, not just functional enough for a demo.
+                Monitor your monthly footprint, identify key emission drivers, and access data-driven insights to optimize your environmental impact.
               </p>
             </div>
 
@@ -303,10 +306,10 @@ function Dashboard() {
 
         <section className="theme-surface-strong grid gap-6 rounded-4xl p-6 shadow-2xl lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.35em] theme-muted">Winning story</p>
-            <h2 className="mt-3 text-3xl font-black theme-text">A dashboard with a point of view</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.35em] theme-muted">Strategic Overview</p>
+            <h2 className="mt-3 text-3xl font-black theme-text">Empowering Sustainable Choices</h2>
             <p className="mt-4 max-w-xl text-sm leading-7 theme-muted">
-              The layout now tells a story, not just numbers. It highlights the source, the opportunity, and the next move, which is what wins attention in a hackathon demo.
+              Our intelligent tracking system translates complex emission data into actionable steps. We highlight your biggest opportunities for reduction, helping you lead a more eco-conscious lifestyle.
             </p>
           </div>
 
@@ -320,6 +323,7 @@ function Dashboard() {
           </div>
         </section>
       </div>
+    </div>
     </div>
   );
 }
