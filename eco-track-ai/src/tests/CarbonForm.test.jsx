@@ -1,8 +1,6 @@
 import { render, screen } from "@testing-library/react";
-
-import CarbonForm from "../components/CarbonForm";
-
 import { describe, it, expect } from "vitest";
+import CarbonForm from "../components/CarbonForm";
 
 describe("CarbonForm", () => {
 
@@ -14,7 +12,7 @@ describe("CarbonForm", () => {
       screen.getByText(
         /Carbon Footprint Calculator/i
       )
-    ).toBeDefined();
+    ).toBeTruthy();
 
   });
 
