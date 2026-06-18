@@ -169,14 +169,14 @@ function Awareness() {
                 {/* Pledge CTA */}
                 <section className="theme-surface-strong overflow-hidden rounded-4xl p-8 text-center shadow-2xl sm:p-12">
                     <div className="mx-auto max-w-2xl">
-                        <h2 className="mb-6 text-4xl font-black theme-text">Take the Green Pledge</h2>
+                        <h2 className="mb-6 text-4xl text-emerald-500 font-black theme-text">Take the Green Pledge</h2>
                         <p className="mb-10 text-lg theme-muted">
                             Commit to a more sustainable lifestyle today. Receive a digital certificate
                             and join a community of environmental leaders.
                         </p>
                         <Link
                             to="/pledge"
-                            className="btn btn-primary inline-flex h-14 items-center px-10 text-lg"
+                            className="btn btn-primary font-extrabold text-emerald-400 inline-flex h-14 items-center px-10 text-lg"
                         >
                             🌍 Take The Pledge
                         </Link>

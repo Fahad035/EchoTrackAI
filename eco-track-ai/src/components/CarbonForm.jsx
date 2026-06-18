@@ -2,17 +2,37 @@ import { useState } from "react";
 import { calculateCarbon, calculateCarbonBreakdown } from "../utils/carbonCalculator";
 import { getCarbonAdvice } from "../services/gemini";
 import { saveCarbonRecord } from "../services/carbonService";
+import Loader from "./Loader";
 
-const InputField = ({ icon, label, type, value, onChange, placeholder }) => (
+const InputField = ({
+  id,
+  icon,
+  label,
+  type,
+  value,
+  onChange,
+  placeholder
+}) => (
   <div className="relative">
-    <label className="block text-sm font-semibold text-white/90 mb-2">{icon} {label}</label>
+
+    <label
+      htmlFor={id}
+      className="block text-sm font-semibold text-white/90 mb-2"
+    >
+      {icon} {label}
+    </label>
+
     <input
+      id={id}
+      aria-label={label}
+      aria-required="true"
       type={type}
       placeholder={placeholder}
       value={value}
       onChange={onChange}
       className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-400/50 backdrop-blur-xl transition-all duration-300"
     />
+
   </div>
 );
 
@@ -92,6 +112,7 @@ function CarbonForm() {
             {/* Input Fields */}
             <div className="space-y-5">
               <InputField
+                id="carKm"
                 icon="🚗"
                 label="Monthly Car Travel"
                 type="number"
@@ -101,6 +122,7 @@ function CarbonForm() {
               />
 
               <InputField
+                id="electricityUnits"
                 icon="⚡"
                 label="Monthly Electricity Units"
                 type="number"
@@ -111,8 +133,12 @@ function CarbonForm() {
 
               {/* Diet Selection */}
               <div>
-                <label className="block text-sm font-semibold text-white/90 mb-2">🍽️ Diet Type</label>
+                <label htmlFor="diet"
+                      className="block text-sm font-semibold text-white/90 mb-2">🍽️ Diet Type</label>
                 <select
+                  id="diet"
+                  aria-label="Diet Type"
+                  aria-required="true"
                   value={diet}
                   onChange={(e) => setDiet(e.target.value)}
                   className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-400/50 backdrop-blur-xl transition-all duration-300"
@@ -166,19 +192,18 @@ function CarbonForm() {
               </div>
 
               {/* AI Insights Button */}
-              <button
-                onClick={generateAdvice}
-                disabled={loading}
-                className="w-full bg-linear-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
-              >
+              
                 {loading ? (
-                  <>
-                    <span className="animate-spin">⚙️</span> Generating AI Insights...
-                  </>
+                  <Loader />
                 ) : (
-                  <>🤖 Get AI Sustainability Coach</>
+                  <button
+                    onClick={generateAdvice}
+                    className="w-full bg-linear-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-bold py-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+                  >
+                    🤖 Get AI Sustainability Coach
+                  </button>
                 )}
-              </button>
+              
 
               {/* AI Advice Section */}
               {aiAdvice && (

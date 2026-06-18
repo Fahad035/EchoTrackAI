@@ -101,17 +101,7 @@ function Dashboard() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:w-auto">
-              <a href="/#calculator" className="btn btn-primary justify-center">
-                Recalculate
-              </a>
-              <a href="/#contact" className="btn btn-secondary justify-center">
-                Share Feedback
-              </a>
-              <Link to="/" className="btn btn-secondary justify-center sm:col-span-2 lg:col-span-1">
-                Back Home
-              </Link>
-            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:w-auto"></div>
           </div>
         </header>
 
@@ -306,7 +296,7 @@ function Dashboard() {
 
         <section className="theme-surface-strong grid gap-6 rounded-4xl p-6 shadow-2xl lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.35em] theme-muted">Strategic Overview</p>
+            <p className="text-xs font-semibold text-cyan-300 uppercase tracking-[0.35em] theme-muted">Strategic Overview</p>
             <h2 className="mt-3 text-3xl font-black theme-text">Empowering Sustainable Choices</h2>
             <p className="mt-4 max-w-xl text-sm leading-7 theme-muted">
               Our intelligent tracking system translates complex emission data into actionable steps. We highlight your biggest opportunities for reduction, helping you lead a more eco-conscious lifestyle.
@@ -314,10 +304,10 @@ function Dashboard() {
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
-            <Link to="/" className="btn btn-secondary justify-center">
+            <Link to="/" className="btn btn-secondary font-extrabold text-cyan-400 justify-center">
               Back to Home
             </Link>
-            <a href="/#calculator" className="btn btn-primary justify-center">
+            <a href="/#calculator" className="btn btn-primary font-extrabold text-cyan-400 justify-center">
               Recalculate Footprint
             </a>
           </div>

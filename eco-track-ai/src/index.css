@@ -1,1 +1,23 @@
 @import "tailwindcss";
+
+@keyframes neonPulse {
+
+  0% {
+    filter: drop-shadow(0 0 8px #22d3ee);
+  }
+
+  50% {
+    filter: drop-shadow(0 0 24px #22d3ee);
+  }
+
+  100% {
+    filter: drop-shadow(0 0 8px #22d3ee);
+  }
+
+}
+
+.neon-loader {
+  animation:
+    spin 1s linear infinite,
+    neonPulse 2s ease-in-out infinite;
+}

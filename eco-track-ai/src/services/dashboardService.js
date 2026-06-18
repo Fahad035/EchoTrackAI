@@ -18,11 +18,9 @@ async () => {
       )
     );
 
-  return snapshot.docs.map(
-    doc => ({
-      id: doc.id,
-      ...doc.data()
-    })
-  );
+  return snapshot.docs.map(doc => ({
+  id: doc.id,
+  ...doc.data()
+}));
 
 };
