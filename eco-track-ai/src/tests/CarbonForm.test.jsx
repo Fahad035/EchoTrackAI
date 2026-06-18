@@ -9,10 +9,18 @@ describe("CarbonForm", () => {
     render(<CarbonForm />);
 
     expect(
-      screen.getByText(
-        /Carbon Footprint Calculator/i
-      )
-    ).toBeTruthy();
+      screen.getByText(/Carbon Footprint Calculator/i)
+    ).toBeInTheDocument();
+
+  });
+
+  it("renders calculate button", () => {
+
+    render(<CarbonForm />);
+
+    expect(
+      screen.getByRole("button")
+    ).toBeInTheDocument();
 
   });
 
