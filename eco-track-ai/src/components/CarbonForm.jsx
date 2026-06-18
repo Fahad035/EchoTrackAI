@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { calculateCarbon, calculateCarbonBreakdown } from "../utils/carbonCalculator";
-import { db } from "../services/firebase";
 import { getCarbonAdvice } from "../services/gemini";
-import { collection, addDoc } from "firebase/firestore";
+import { saveCarbonRecord } from "../services/carbonService";
 
 const InputField = ({ icon, label, type, value, onChange, placeholder }) => (
   <div className="relative">
@@ -40,7 +39,7 @@ function CarbonForm() {
     setResult(total);
 
     try {
-      await addDoc(collection(db, "carbonRecords"), {
+      await saveCarbonRecord({
         carKm: parseFloat(carKm),
         electricityUnits: parseFloat(electricityUnits),
         diet,
