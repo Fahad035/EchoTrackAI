@@ -47,10 +47,39 @@ function CarbonForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setFormError("");
 
-    if (!carKm || !electricityUnits) {
-      setFormError("Please fill in all fields");
+    const carValue = Number(carKm);
+    const electricityValue = Number(electricityUnits);
+
+    if (
+      isNaN(carValue) ||
+      isNaN(electricityValue)
+    ) {
+      setFormError(
+        "Please enter valid numbers."
+      );
+      return;
+    }
+
+    if (
+      carValue < 0 ||
+      electricityValue < 0
+    ) {
+      setFormError(
+        "Values cannot be negative."
+      );
+      return;
+    }
+
+    if (
+      carValue > 100000 ||
+      electricityValue > 100000
+    ) {
+      setFormError(
+        "Input value too large."
+      );
       return;
     }
 
@@ -93,7 +122,7 @@ function CarbonForm() {
       {/* Background Animation */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/3 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1.5s'}}></div>
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
       </div>
 
       <div className="relative z-10 mx-auto max-w-4xl">
@@ -134,7 +163,7 @@ function CarbonForm() {
               {/* Diet Selection */}
               <div>
                 <label htmlFor="diet"
-                      className="block text-sm font-semibold text-white/90 mb-2">🍽️ Diet Type</label>
+                  className="block text-sm font-semibold text-white/90 mb-2">🍽️ Diet Type</label>
                 <select
                   id="diet"
                   aria-label="Diet Type"
@@ -192,18 +221,18 @@ function CarbonForm() {
               </div>
 
               {/* AI Insights Button */}
-              
-                {loading ? (
-                  <Loader />
-                ) : (
-                  <button
-                    onClick={generateAdvice}
-                    className="w-full bg-linear-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-bold py-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
-                  >
-                    🤖 Get AI Sustainability Coach
-                  </button>
-                )}
-              
+
+              {loading ? (
+                <Loader />
+              ) : (
+                <button
+                  onClick={generateAdvice}
+                  className="w-full bg-linear-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-bold py-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+                >
+                  🤖 Get AI Sustainability Coach
+                </button>
+              )}
+
 
               {/* AI Advice Section */}
               {aiAdvice && (
