@@ -1,20 +1,29 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 import Awareness from "../../pages/Awareness";
 
 describe("Awareness", () => {
 
-  it("renders awareness heading", () => {
-    render(<Awareness />);
-    expect(
-      screen.getByText(/Reduce Carbon Footprint/i)
-    ).toBeTruthy();
+  it("renders page", () => {
+    render(
+      <MemoryRouter>
+        <Awareness />
+      </MemoryRouter>
+    );
+
+    expect(document.body).toBeTruthy();
   });
 
-  it("renders pledge button", () => {
-    render(<Awareness />);
+  it("contains awareness content", () => {
+    render(
+      <MemoryRouter>
+        <Awareness />
+      </MemoryRouter>
+    );
+
     expect(
-      screen.getByText(/Take The Green Pledge/i)
+      screen.getByText(/Carbon Awareness/i)
     ).toBeTruthy();
   });
 

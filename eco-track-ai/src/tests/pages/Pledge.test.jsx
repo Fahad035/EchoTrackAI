@@ -4,239 +4,240 @@ import Pledge from "../../pages/Pledge";
 
 describe("Pledge Page", () => {
 
-  it("renders pledge heading", () => {
-    render(<Pledge />);
+    it("renders pledge heading", () => {
+        render(<Pledge />);
 
-    expect(
-      screen.getByText(/Take The Green Pledge/i)
-    ).toBeTruthy();
-  });
+        expect(
+            screen.getByText(/Take The Green Pledge/i)
+        ).toBeTruthy();
+    });
 
-  it("renders full name input", () => {
-    render(<Pledge />);
+    it("renders full name input", () => {
+        render(<Pledge />);
 
-    expect(
-      screen.getByPlaceholderText(/Full Name/i)
-    ).toBeTruthy();
-  });
+        expect(
+            screen.getByPlaceholderText(/Full Name/i)
+        ).toBeTruthy();
+    });
 
-  it("renders email input", () => {
-    render(<Pledge />);
+    it("renders email input", () => {
+        render(<Pledge />);
 
-    expect(
-      screen.getByPlaceholderText(/Email/i)
-    ).toBeTruthy();
-  });
+        expect(
+            screen.getByPlaceholderText(/Email/i)
+        ).toBeTruthy();
+    });
 
-  it("renders city input", () => {
-    render(<Pledge />);
+    it("renders city input", () => {
+        render(<Pledge />);
 
-    expect(
-      screen.getByPlaceholderText(/City/i)
-    ).toBeTruthy();
-  });
+        expect(
+            screen.getByPlaceholderText(/City/i)
+        ).toBeTruthy();
+    });
 
-  it("renders generate certificate button", () => {
-    render(<Pledge />);
+    it("renders generate certificate button", () => {
+        render(<Pledge />);
 
-    expect(
-      screen.getByText(/Generate Certificate/i)
-    ).toBeTruthy();
-  });
+        expect(
+            screen.getByText(/Generate Certificate/i)
+        ).toBeTruthy();
+    });
 
-  it("shows certificate after form submission", () => {
-    render(<Pledge />);
+    it("shows certificate after form submission", () => {
+        render(<Pledge />);
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/Full Name/i),
-      {
-        target: {
-          value: "Md Fahad"
-        }
-      }
-    );
+        fireEvent.change(
+            screen.getByPlaceholderText(/Full Name/i),
+            {
+                target: {
+                    value: "Md Fahad"
+                }
+            }
+        );
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/Email/i),
-      {
-        target: {
-          value: "fahad@test.com"
-        }
-      }
-    );
+        fireEvent.change(
+            screen.getByPlaceholderText(/Email/i),
+            {
+                target: {
+                    value: "fahad@test.com"
+                }
+            }
+        );
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/City/i),
-      {
-        target: {
-          value: "Hyderabad"
-        }
-      }
-    );
+        fireEvent.change(
+            screen.getByPlaceholderText(/City/i),
+            {
+                target: {
+                    value: "Hyderabad"
+                }
+            }
+        );
 
-    fireEvent.click(
-      screen.getByText(/Generate Certificate/i)
-    );
+        fireEvent.click(
+            screen.getByText(/Generate Certificate/i)
+        );
 
-    expect(
-      screen.getByText(/GREEN PLEDGE CERTIFICATE/i)
-    ).toBeTruthy();
-  });
+        expect(
+            screen.getByText(/GREEN PLEDGE CERTIFICATE/i)
+        ).toBeTruthy();
+    });
 
-  it("shows user name on certificate", () => {
-    render(<Pledge />);
+    it("shows user name on certificate", () => {
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/Full Name/i),
-      {
-        target: {
-          value: "Md Fahad"
-        }
-      }
-    );
+        render(<Pledge />);
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/Email/i),
-      {
-        target: {
-          value: "fahad@test.com"
-        }
-      }
-    );
+        fireEvent.change(
+            screen.getByPlaceholderText("Full Name"),
+            {
+                target: {
+                    value: "Md Fahad"
+                }
+            }
+        );
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/City/i),
-      {
-        target: {
-          value: "Hyderabad"
-        }
-      }
-    );
+        fireEvent.change(
+            screen.getByPlaceholderText("Email"),
+            {
+                target: {
+                    value: "test@test.com"
+                }
+            }
+        );
 
-    fireEvent.click(
-      screen.getByText(/Generate Certificate/i)
-    );
+        fireEvent.change(
+            screen.getByPlaceholderText("City"),
+            {
+                target: {
+                    value: "Hyderabad"
+                }
+            }
+        );
 
-    expect(
-      screen.getByText("Md Fahad")
-    ).toBeTruthy();
-  });
+        fireEvent.click(
+            screen.getByText(/Generate Certificate/i)
+        );
 
-  it("shows city on certificate", () => {
-    render(<Pledge />);
+        expect(
+            screen.getAllByText(/Md Fahad/i).length
+        ).toBeGreaterThan(0);
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/Full Name/i),
-      {
-        target: {
-          value: "Md Fahad"
-        }
-      }
-    );
+    });
+    it("shows city on certificate", () => {
+        render(<Pledge />);
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/Email/i),
-      {
-        target: {
-          value: "fahad@test.com"
-        }
-      }
-    );
+        fireEvent.change(
+            screen.getByPlaceholderText(/Full Name/i),
+            {
+                target: {
+                    value: "Md Fahad"
+                }
+            }
+        );
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/City/i),
-      {
-        target: {
-          value: "Hyderabad"
-        }
-      }
-    );
+        fireEvent.change(
+            screen.getByPlaceholderText(/Email/i),
+            {
+                target: {
+                    value: "fahad@test.com"
+                }
+            }
+        );
 
-    fireEvent.click(
-      screen.getByText(/Generate Certificate/i)
-    );
+        fireEvent.change(
+            screen.getByPlaceholderText(/City/i),
+            {
+                target: {
+                    value: "Hyderabad"
+                }
+            }
+        );
 
-    expect(
-      screen.getByText("Hyderabad")
-    ).toBeTruthy();
-  });
+        fireEvent.click(
+            screen.getByText(/Generate Certificate/i)
+        );
 
-  it("shows certificate id after submission", () => {
-    render(<Pledge />);
+        expect(
+            screen.getByText("Hyderabad")
+        ).toBeTruthy();
+    });
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/Full Name/i),
-      {
-        target: {
-          value: "Md Fahad"
-        }
-      }
-    );
+    it("shows certificate id after submission", () => {
+        render(<Pledge />);
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/Email/i),
-      {
-        target: {
-          value: "fahad@test.com"
-        }
-      }
-    );
+        fireEvent.change(
+            screen.getByPlaceholderText(/Full Name/i),
+            {
+                target: {
+                    value: "Md Fahad"
+                }
+            }
+        );
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/City/i),
-      {
-        target: {
-          value: "Hyderabad"
-        }
-      }
-    );
+        fireEvent.change(
+            screen.getByPlaceholderText(/Email/i),
+            {
+                target: {
+                    value: "fahad@test.com"
+                }
+            }
+        );
 
-    fireEvent.click(
-      screen.getByText(/Generate Certificate/i)
-    );
+        fireEvent.change(
+            screen.getByPlaceholderText(/City/i),
+            {
+                target: {
+                    value: "Hyderabad"
+                }
+            }
+        );
 
-    expect(
-      screen.getByText(/Certificate ID/i)
-    ).toBeTruthy();
-  });
+        fireEvent.click(
+            screen.getByText(/Generate Certificate/i)
+        );
 
-  it("shows print certificate button", () => {
-    render(<Pledge />);
+        expect(
+            screen.getByText(/Certificate ID/i)
+        ).toBeTruthy();
+    });
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/Full Name/i),
-      {
-        target: {
-          value: "Md Fahad"
-        }
-      }
-    );
+    it("shows print certificate button", () => {
+        render(<Pledge />);
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/Email/i),
-      {
-        target: {
-          value: "fahad@test.com"
-        }
-      }
-    );
+        fireEvent.change(
+            screen.getByPlaceholderText(/Full Name/i),
+            {
+                target: {
+                    value: "Md Fahad"
+                }
+            }
+        );
 
-    fireEvent.change(
-      screen.getByPlaceholderText(/City/i),
-      {
-        target: {
-          value: "Hyderabad"
-        }
-      }
-    );
+        fireEvent.change(
+            screen.getByPlaceholderText(/Email/i),
+            {
+                target: {
+                    value: "fahad@test.com"
+                }
+            }
+        );
 
-    fireEvent.click(
-      screen.getByText(/Generate Certificate/i)
-    );
+        fireEvent.change(
+            screen.getByPlaceholderText(/City/i),
+            {
+                target: {
+                    value: "Hyderabad"
+                }
+            }
+        );
 
-    expect(
-      screen.getByText(/Print Certificate/i)
-    ).toBeTruthy();
-  });
+        fireEvent.click(
+            screen.getByText(/Generate Certificate/i)
+        );
+
+        expect(
+            screen.getByText(/Print Certificate/i)
+        ).toBeTruthy();
+    });
 
 });

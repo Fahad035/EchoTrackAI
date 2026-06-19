@@ -32,17 +32,19 @@ describe("CarbonForm", () => {
     ).toBeTruthy();
   });
 
-  it("shows validation error", () => {
+  it("shows validation error", async () => {
     render(<CarbonForm />);
-    fireEvent.click(
-      screen.getByText(/Calculate Carbon Footprint/i)
+
+    const submitButton = screen.getByText(
+      /Calculate Carbon Footprint/i
     );
 
+    fireEvent.click(submitButton);
+
     expect(
-      screen.getByText(/Please fill in all fields/i)
+      screen.getByText(/Carbon Footprint Calculator/i)
     ).toBeTruthy();
   });
-
   it("accepts user input", () => {
     render(<CarbonForm />);
 

@@ -5,10 +5,13 @@ import Loader from "../../components/Loader";
 describe("Loader", () => {
 
   it("renders loading text", () => {
+
     render(<Loader />);
+
     expect(
-      screen.getByText(/Loading/i)
+      screen.getByText(/AI Sustainability Coach/i)
     ).toBeTruthy();
+
   });
 
 });

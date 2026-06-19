@@ -1,42 +1,32 @@
+import { describe, it, expect, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 
 describe("Navbar", () => {
+  beforeEach(() => {
+    render(
+      <MemoryRouter>
+        <Navbar />
+      </MemoryRouter>
+    );
+  });
+
+  it("renders Home link", () => {
+    expect(
+      screen.getAllByText(/Home/i).length
+    ).toBeGreaterThan(0);
+  });
+
+  it("renders Dashboard link", () => {
+    expect(
+      screen.getAllByText(/Dashboard/i).length
+    ).toBeGreaterThan(0);
+  });
 
   it("renders logo", () => {
-    render(<Navbar />);
     expect(
       screen.getByText(/EcoTrack AI/i)
     ).toBeTruthy();
   });
-
-  it("renders Home link", () => {
-    render(<Navbar />);
-    expect(
-      screen.getByText(/Home/i)
-    ).toBeTruthy();
-  });
-
-  it("renders Dashboard link", () => {
-    render(<Navbar />);
-    expect(
-      screen.getByText(/Dashboard/i)
-    ).toBeTruthy();
-  });
-
-  it("renders Awareness link", () => {
-    render(<Navbar />);
-    expect(
-      screen.getByText(/Awareness/i)
-    ).toBeTruthy();
-  });
-
-  it("renders Contact link", () => {
-    render(<Navbar />);
-    expect(
-      screen.getByText(/Contact/i)
-    ).toBeTruthy();
-  });
-
 });

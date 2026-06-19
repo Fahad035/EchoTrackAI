@@ -1,19 +1,20 @@
 import { render, screen } from "@testing-library/react";
+import { BrowserRouter } from "react-router-dom";
 import { describe, it, expect } from "vitest";
 import Dashboard from "../../pages/Dashboard";
 
 describe("Dashboard", () => {
 
-  it("renders dashboard heading", () => {
-    render(<Dashboard />);
-    expect(
-      screen.getByText(/Dashboard/i)
-    ).toBeTruthy();
-  });
+  it("renders dashboard page", () => {
+    render(
+      <BrowserRouter>
+        <Dashboard />
+      </BrowserRouter>
+    );
 
-  it("renders charts section", () => {
-    render(<Dashboard />);
-    expect(document.body).toBeTruthy();
+    expect(
+      screen.getAllByText(/Your Personal Sustainability Command Center/i).length
+    ).toBeGreaterThan(0);
   });
 
 });

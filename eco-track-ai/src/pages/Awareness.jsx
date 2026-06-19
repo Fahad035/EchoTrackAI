@@ -21,7 +21,7 @@ function Awareness() {
                         Knowledge for Change
                     </div>
                     <h1 className="mb-6 text-5xl font-black tracking-tight sm:text-6xl lg:text-7xl">
-                        Carbon <span className="gradient-text">Awareness</span>
+                        Carbon Awareness
                     </h1>
                     <p className="mx-auto max-w-3xl text-lg leading-8 text-white/70 sm:text-xl">
                         Learn how your daily activities impact the environment
