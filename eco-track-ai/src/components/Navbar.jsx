@@ -36,9 +36,8 @@ function Navbar() {
 				<div className="hidden items-center gap-4 lg:flex">
 					{navLinks.map((link) => {
 						const active = isActive(link.href);
-						const linkClasses = `group relative px-3 py-2 text-sm font-semibold transition-all duration-300 hover:text-white ${
-							active ? "text-white" : "text-emerald-300/80"
-						}`;
+						const linkClasses = `group relative px-3 py-2 text-sm font-semibold transition-all duration-300 hover:text-white ${active ? "text-white" : "text-emerald-300/80"
+							}`;
 
 						const content = (
 							<>
@@ -96,9 +95,8 @@ function Navbar() {
 				<div className="mx-auto flex max-w-7xl flex-col gap-3">
 					{navLinks.map((link, index) => {
 						const active = isActive(link.href);
-						const mobileClasses = `flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition-all duration-300 hover:bg-white/10 ${
-							active ? "border-emerald-500/50 bg-emerald-500/10 text-white" : "text-white/80"
-						}`;
+						const mobileClasses = `flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition-all duration-300 hover:bg-white/10 ${active ? "border-emerald-500/50 bg-emerald-500/10 text-white" : "text-white/80"
+							}`;
 
 						const content = (
 							<>

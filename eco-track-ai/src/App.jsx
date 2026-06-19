@@ -1,12 +1,17 @@
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { loginAnonymous } from "./firebase/auth";
 
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Awareness from "./pages/Awareness";
 import Pledge from "./pages/Pledge";
 
+
+
+
 function App() {
+
   useEffect(() => {
     const storedTheme = localStorage.getItem("eco-track-theme");
     const systemPrefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
@@ -14,6 +19,16 @@ function App() {
 
     document.documentElement.dataset.theme = initialTheme;
     localStorage.setItem("eco-track-theme", initialTheme);
+
+    // Firebase Anonymous Login
+    loginAnonymous()
+      .then((user) => {
+        console.log("Anonymous User:", user.uid);
+      })
+      .catch((error) => {
+        console.error("Auth Error:", error);
+      });
+
   }, []);
 
   return (

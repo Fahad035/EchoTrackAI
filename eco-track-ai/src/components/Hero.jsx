@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 function Hero() {
   return (
     <section
+      aria-label="EcoTrack AI homepage hero section"
       id="home"
       className="relative overflow-hidden bg-linear-to-br from-slate-950 via-slate-900 to-emerald-950 py-28 text-white"
     >

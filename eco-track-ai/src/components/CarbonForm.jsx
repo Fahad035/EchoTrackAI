@@ -3,6 +3,7 @@ import { calculateCarbon, calculateCarbonBreakdown } from "../utils/carbonCalcul
 import { getCarbonAdvice } from "../services/gemini";
 import { saveCarbonRecord } from "../services/carbonService";
 import Loader from "./Loader";
+import { carbonSchema } from "../validation/carbonSchema";
 
 const InputField = ({
   id,
@@ -49,6 +50,19 @@ function CarbonForm() {
     e.preventDefault();
 
     setFormError("");
+
+    const formData = {
+      carKm: Number(carKm),
+      electricityUnits: Number(electricityUnits),
+      diet
+    };
+
+    const validation = carbonSchema.safeParse(formData);
+
+    if (!validation.success) {
+      setFormError(validation.error.errors[0].message);
+      return;
+    }
 
     const carValue = Number(carKm);
     const electricityValue = Number(electricityUnits);
@@ -118,7 +132,7 @@ function CarbonForm() {
   };
 
   return (
-    <section id="calculator" className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+    <section aria-label="Carbon footprint calculator section" id="calculator" className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
       {/* Background Animation */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/3 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
