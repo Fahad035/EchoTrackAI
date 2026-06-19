@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
-import {
-  calculateCarbon
-} from "../utils/carbonCalculator";
+import { calculateCarbon }
+from "../../utils/carbonCalculator";
 
 describe("Carbon Calculator", () => {
 

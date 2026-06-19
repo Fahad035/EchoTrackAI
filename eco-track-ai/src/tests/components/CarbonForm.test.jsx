@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import CarbonForm from "../components/CarbonForm";
+import CarbonForm from "../../components/CarbonForm";
 
 describe("CarbonForm", () => {
 
