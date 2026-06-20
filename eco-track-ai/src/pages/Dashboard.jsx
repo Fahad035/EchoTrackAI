@@ -60,21 +60,98 @@ const MetricLine = ({ label, value, percent, color }) => (
   </div>
 );
 
-function Dashboard() {
-  const data = [
-    { name: "Transport", value: 120 },
-    { name: "Electricity", value: 90 },
-    { name: "Food", value: 60 }
-  ];
+import { useEffect, useMemo, useState } from "react";
+import { getCarbonRecords } from "../services/dashboardService";
 
+function Dashboard() {
   const COLORS = ["#10b981", "#06b6d4", "#f59e0b"];
 
-  const total = 270;
+  const [loading, setLoading] = useState(true);
+  void loading;
+  const [error, setError] = useState("");
+  const [records, setRecords] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    (async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const res = await getCarbonRecords();
+        if (isMounted) setRecords(Array.isArray(res) ? res : []);
+      } catch (setError) {
+        if (!isMounted) return;
+        setError("Failed to load dashboard data. Please try again.");
+        setRecords([]);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const aggregates = useMemo(() => {
+    const transportTotal = records.reduce(
+      (sum, r) => sum + (Number(r?.transportEmission) || 0),
+      0
+    );
+    const electricityTotal = records.reduce(
+      (sum, r) => sum + (Number(r?.electricityEmission) || 0),
+      0
+    );
+    const foodTotal = records.reduce(
+      (sum, r) => sum + (Number(r?.foodEmission) || 0),
+      0
+    );
+
+    const submissionsCount = records.length;
+
+    const totalFromField = records.reduce(
+      (sum, r) => sum + (Number(r?.total) || 0),
+      0
+    );
+
+    const total = totalFromField || transportTotal + electricityTotal + foodTotal;
+
+    const data = [
+      { name: "Transport", value: transportTotal },
+      { name: "Electricity", value: electricityTotal },
+      { name: "Food", value: foodTotal },
+    ];
+
+    const biggestSource = data.reduce((currentMax, entry) => {
+      return entry.value > currentMax.value ? entry : currentMax;
+    }, data[0]);
+
+    return {
+      data,
+      total,
+      transportTotal,
+      electricityTotal,
+      foodTotal,
+      submissionsCount,
+      biggestSource,
+    };
+  }, [records]);
+
   const goal = 200;
-  const progress = (total / goal) * 100;
+  const progress = (aggregates.total / goal) * 100;
   const progressClamped = Math.min(progress, 100);
-  const biggestSource = data.reduce((currentMax, entry) => (entry.value > currentMax.value ? entry : currentMax), data[0]);
+
+  // Keep existing UX: savings potential is a friendly static value.
+  // It’s shown alongside live metrics; you can adjust later to be data-driven.
   const potentialReduction = 42;
+
+  const { data, biggestSource } = aggregates;
+
+  const formatKg = (n) => {
+    const num = Number(n);
+    return Number.isFinite(num) ? Math.round(num) : 0;
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
@@ -111,7 +188,7 @@ function Dashboard() {
                 <StatCard
                   icon="🌍"
                   label="Total footprint"
-                  value={total}
+                  value={aggregates.total}
                   unit="kg CO₂ this month"
                   accent="bg-linear-to-br from-emerald-500/20 to-cyan-500/10"
                 />
@@ -125,8 +202,8 @@ function Dashboard() {
                 <StatCard
                   icon="⚠️"
                   label="Main source"
-                  value={biggestSource.name}
-                  unit={`${biggestSource.value} kg CO₂`}
+                  value={aggregates.biggestSource.name}
+                  unit={`${aggregates.biggestSource.value} kg CO₂`}
                   accent="bg-linear-to-br from-orange-500/20 to-rose-500/10"
                 />
                 <StatCard
@@ -139,6 +216,12 @@ function Dashboard() {
               </div>
 
               <section className="theme-surface rounded-4xl p-6 shadow-2xl sm:p-8">
+                {error && (
+                  <div className="mb-4 rounded-xl border border-red-500/50 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                    ⚠️ {error}
+                  </div>
+                )}
+
                 <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.35em] theme-muted">Carbon health</p>
@@ -213,9 +296,24 @@ function Dashboard() {
                 <p className="text-xs font-semibold uppercase tracking-[0.35em] theme-muted">Operational view</p>
                 <h3 className="mt-2 text-2xl font-black theme-text">Contribution mix</h3>
                 <div className="mt-5 space-y-4">
-                  <MetricLine label="Transport" value="120 kg CO₂" percent={100} color="from-rose-400 to-orange-500" />
-                  <MetricLine label="Electricity" value="90 kg CO₂" percent={75} color="from-emerald-400 to-cyan-500" />
-                  <MetricLine label="Food" value="60 kg CO₂" percent={50} color="from-amber-400 to-yellow-500" />
+                  <MetricLine
+                    label="Transport"
+                    value={`${formatKg(aggregates.transportTotal)} kg CO₂`}
+                    percent={aggregates.total ? (aggregates.transportTotal / aggregates.total) * 100 : 0}
+                    color="from-rose-400 to-orange-500"
+                  />
+                  <MetricLine
+                    label="Electricity"
+                    value={`${formatKg(aggregates.electricityTotal)} kg CO₂`}
+                    percent={aggregates.total ? (aggregates.electricityTotal / aggregates.total) * 100 : 0}
+                    color="from-emerald-400 to-cyan-500"
+                  />
+                  <MetricLine
+                    label="Food"
+                    value={`${formatKg(aggregates.foodTotal)} kg CO₂`}
+                    percent={aggregates.total ? (aggregates.foodTotal / aggregates.total) * 100 : 0}
+                    color="from-amber-400 to-yellow-500"
+                  />
                 </div>
               </section>
             </aside>
