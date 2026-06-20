@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Awareness from "./pages/Awareness";
 import Pledge from "./pages/Pledge";
+import { getAuth } from "firebase/auth";
 
 
 
@@ -21,14 +22,13 @@ function App() {
     localStorage.setItem("eco-track-theme", initialTheme);
 
     // Firebase Anonymous Login
-    loginAnonymous()
-      .then((user) => {
-        console.log("Anonymous User:", user.uid);
-      })
-      .catch((error) => {
-        console.error("Auth Error:", error);
-      });
+    const auth = getAuth();
 
+    if (!auth.currentUser) {
+      loginAnonymous().catch((error) => {
+        console.error("Authentication failed:", error);
+      });
+    }
   }, []);
 
   return (
