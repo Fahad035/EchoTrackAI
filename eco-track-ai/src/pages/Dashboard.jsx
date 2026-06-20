@@ -307,12 +307,6 @@ function Dashboard() {
               <Link to="/" className="btn btn-secondary font-extrabold text-cyan-400 justify-center">
                 Back to Home
               </Link>
-              <Link
-                to="/goals"
-                className="bg-green-500 px-6 py-3 rounded-lg"
-              >
-                Manage Goals
-              </Link>
               <a href="/#calculator" className="btn btn-primary font-extrabold text-cyan-400 justify-center">
                 Recalculate Footprint
               </a>
