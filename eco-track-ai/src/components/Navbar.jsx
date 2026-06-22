@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 
 import { useAuth } from "../context/AuthContext";
+import { toast } from "react-hot-toast";
+
 
 
 
@@ -25,8 +27,13 @@ function Navbar() {
 
 	const closeMenu = () => setOpen(false);
 	const handleLogout = async () => {
-		await logout();
-		navigate("/");
+		try {
+			await logout();
+			toast.success("Logout successful");
+			navigate("/");
+		} catch {
+			toast.error("Authentication failed");
+		}
 	};
 
 	const isActive = (href) => {

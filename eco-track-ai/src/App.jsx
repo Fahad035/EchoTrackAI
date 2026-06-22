@@ -10,8 +10,10 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
 import { AuthProvider } from "./context/AuthContext";
+import { Toaster } from "react-hot-toast";
 
 function App() {
+
 
 
   useEffect(() => {
@@ -52,6 +54,7 @@ function App() {
 
   return (
     <AuthProvider>
+      <Toaster />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />

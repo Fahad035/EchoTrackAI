@@ -61,12 +61,14 @@ function Signup() {
     try {
       setIsLoading(true);
       await signup(email.trim(), password);
-      toast.success("Account created successfully!");
+      toast.success("Signup successful");
       navigate("/dashboard");
     } catch (err) {
-      const message = err?.message || "Signup failed. Please try again.";
-      setFormError(message);
-      toast.error(message);
+      const msg = "Authentication failed";
+      // err is intentionally not used, but keep linting happy.
+      void err;
+      setFormError(msg);
+      toast.error(msg);
     } finally {
       setIsLoading(false);
     }

@@ -50,12 +50,20 @@ function Login() {
     try {
       setIsLoading(true);
       await login(email.trim(), password);
-      toast.success("Welcome back! Logging you in...");
+      toast.success("Login successful");
       navigate("/dashboard");
     } catch (err) {
-      const message = err?.message || "Login failed. Please try again.";
-      setFormError(message);
-      toast.error(message);
+      const code = err?.code;
+      // Firebase auth codes vary by provider; use both code+message heuristics.
+      const invalid =
+        code === "auth/invalid-credential" ||
+        code === "auth/wrong-password" ||
+        (typeof err?.message === "string" &&
+          /invalid|wrong\s*password|credential/i.test(err.message));
+
+      const msg = invalid ? "Invalid credentials" : "Authentication failed";
+      setFormError(msg);
+      toast.error(msg);
     } finally {
       setIsLoading(false);
     }
