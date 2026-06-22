@@ -43,7 +43,7 @@ function HomeContent() {
           />
 
           {/* Scanline */}
-          <div className="absolute left-0 right-0 top-0 h-24 bg-gradient-to-b from-cyan-400/15 to-transparent opacity-60 animate-shimmer" />
+          <div className="absolute left-0 right-0 top-0 h-24 bg-linear-to-b from-cyan-400/15 to-transparent opacity-60 animate-shimmer" />
         </div>
 
         {/* Floating eco icons */}
@@ -239,7 +239,7 @@ function HomeContent() {
       {/* Large CTA */}
       <section aria-label="Large CTA" className="py-24 bg-linear-to-br from-slate-950 via-slate-900 to-emerald-950">
         <div className="mx-auto max-w-6xl px-4">
-          <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/40 backdrop-blur-xl p-8 sm:p-12 glass">
+          <div className="relative overflow-hidden rounded-4xl border border-white/10 bg-slate-950/40 backdrop-blur-xl p-8 sm:p-12 glass">
             <div className="absolute inset-0 opacity-70">
               <div className="absolute -top-16 -left-16 h-72 w-72 rounded-full bg-emerald-500/15 blur-3xl animate-float" />
               <div className="absolute -bottom-16 -right-16 h-72 w-72 rounded-full bg-cyan-500/15 blur-3xl animate-float" style={{ animationDelay: "400ms" }} />
