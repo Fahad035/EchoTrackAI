@@ -1,4 +1,18 @@
 import { useState } from "react";
+// Link import removed for test-safety (avoids requiring Router context in unit tests)
+
+import { useAuth } from "../context/AuthContext";
+
+// Tests may render CarbonForm without AuthProvider.
+// Avoid crashing by treating user as unauthenticated when auth context is missing.
+const useOptionalAuth = () => {
+  try {
+    return useAuth();
+  } catch {
+    return { user: null };
+  }
+};
+
 import { calculateCarbon, calculateCarbonBreakdown } from "../utils/carbonCalculator";
 import { getCarbonAdvice } from "../services/gemini";
 import { saveCarbonRecord } from "../services/carbonService";
@@ -12,10 +26,10 @@ const InputField = ({
   type,
   value,
   onChange,
-  placeholder
+  placeholder,
+  disabled
 }) => (
   <div className="relative">
-
     <label
       htmlFor={id}
       className="block text-sm font-semibold text-white/90 mb-2"
@@ -31,13 +45,17 @@ const InputField = ({
       placeholder={placeholder}
       value={value}
       onChange={onChange}
-      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-400/50 backdrop-blur-xl transition-all duration-300"
+      disabled={disabled}
+      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-400/50 backdrop-blur-xl transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60"
     />
-
   </div>
 );
 
 function CarbonForm() {
+  const { user } = useOptionalAuth();
+
+  const isLoggedIn = Boolean(user);
+
   const [carKm, setCarKm] = useState("");
   const [electricityUnits, setElectricityUnits] = useState("");
   const [diet, setDiet] = useState("veg");
@@ -48,6 +66,9 @@ function CarbonForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Hard stop if not authenticated
+    if (!isLoggedIn) return;
 
     setFormError("");
 
@@ -67,33 +88,18 @@ function CarbonForm() {
     const carValue = Number(carKm);
     const electricityValue = Number(electricityUnits);
 
-    if (
-      isNaN(carValue) ||
-      isNaN(electricityValue)
-    ) {
-      setFormError(
-        "Please enter valid numbers."
-      );
+    if (isNaN(carValue) || isNaN(electricityValue)) {
+      setFormError("Please enter valid numbers.");
       return;
     }
 
-    if (
-      carValue < 0 ||
-      electricityValue < 0
-    ) {
-      setFormError(
-        "Values cannot be negative."
-      );
+    if (carValue < 0 || electricityValue < 0) {
+      setFormError("Values cannot be negative.");
       return;
     }
 
-    if (
-      carValue > 100000 ||
-      electricityValue > 100000
-    ) {
-      setFormError(
-        "Input value too large."
-      );
+    if (carValue > 100000 || electricityValue > 100000) {
+      setFormError("Input value too large.");
       return;
     }
 
@@ -119,6 +125,9 @@ function CarbonForm() {
   };
 
   const generateAdvice = async () => {
+    // Hard stop if not authenticated
+    if (!isLoggedIn) return;
+
     setLoading(true);
     try {
       const advice = await getCarbonAdvice(result, carKm, electricityUnits, diet);
@@ -131,12 +140,21 @@ function CarbonForm() {
     }
   };
 
+  const disabled = !isLoggedIn;
+
   return (
-    <section aria-label="Carbon footprint calculator section" id="calculator" className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+    <section
+      aria-label="Carbon footprint calculator section"
+      id="calculator"
+      className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 px-4 py-16 sm:px-6 sm:py-20 lg:px-8"
+    >
       {/* Background Animation */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/3 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+        <div
+          className="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "1.5s" }}
+        ></div>
       </div>
 
       <div className="relative z-10 mx-auto max-w-4xl">
@@ -150,7 +168,33 @@ function CarbonForm() {
           </p>
         </div>
 
-        <div className="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur-2xl transition-all duration-300 hover:shadow-3xl sm:p-8 lg:p-12">
+        <div className="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur-2xl transition-all duration-300 hover:shadow-3xl sm:p-8 lg:p-12 relative">
+          {/* Auth overlay */}
+          {!isLoggedIn && (
+            <div
+              className="absolute inset-0 z-20 backdrop-blur-xl bg-slate-900/40 flex items-center justify-center p-6"
+              aria-hidden="false"
+            >
+              <div className="w-full max-w-md rounded-2xl border border-white/20 bg-white/10 p-8 shadow-2xl">
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-white mb-3">🔒 Please login to calculate your carbon footprint.</p>
+                  <p className="text-sm text-white/70 mb-6">
+                    Sign in to enable calculations and save your results securely.
+                  </p>
+                  <div className="flex items-center justify-center">
+                    <a
+                      href="/login"
+                      className="w-full bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                    >
+                      👤 Login
+                    </a>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Input Fields */}
             <div className="space-y-5">
@@ -162,6 +206,7 @@ function CarbonForm() {
                 value={carKm}
                 onChange={(e) => setCarKm(e.target.value)}
                 placeholder="Enter kilometers (e.g., 500)"
+                disabled={disabled}
               />
 
               <InputField
@@ -172,23 +217,35 @@ function CarbonForm() {
                 value={electricityUnits}
                 onChange={(e) => setElectricityUnits(e.target.value)}
                 placeholder="Enter units (e.g., 150)"
+                disabled={disabled}
               />
 
               {/* Diet Selection */}
               <div>
-                <label htmlFor="diet"
-                  className="block text-sm font-semibold text-white/90 mb-2">🍽️ Diet Type</label>
+                <label
+                  htmlFor="diet"
+                  className="block text-sm font-semibold text-white/90 mb-2"
+                >
+                  🍽️ Diet Type
+                </label>
                 <select
                   id="diet"
                   aria-label="Diet Type"
                   aria-required="true"
                   value={diet}
                   onChange={(e) => setDiet(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-400/50 backdrop-blur-xl transition-all duration-300"
+                  disabled={disabled}
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-400/50 backdrop-blur-xl transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  <option value="veg" className="bg-slate-900">🥗 Vegetarian (Lower Emissions)</option>
-                  <option value="mixed" className="bg-slate-900">🍗 Mixed Diet</option>
-                  <option value="nonveg" className="bg-slate-900">🥩 Non-Vegetarian (Higher Emissions)</option>
+                  <option value="veg" className="bg-slate-900">
+                    🥗 Vegetarian (Lower Emissions)
+                  </option>
+                  <option value="mixed" className="bg-slate-900">
+                    🍗 Mixed Diet
+                  </option>
+                  <option value="nonveg" className="bg-slate-900">
+                    🥩 Non-Vegetarian (Higher Emissions)
+                  </option>
                 </select>
               </div>
             </div>
@@ -203,7 +260,8 @@ function CarbonForm() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+              disabled={disabled}
+              className="w-full bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-60"
             >
               🔢 Calculate Carbon Footprint
             </button>
@@ -235,18 +293,17 @@ function CarbonForm() {
               </div>
 
               {/* AI Insights Button */}
-
               {loading ? (
                 <Loader />
               ) : (
                 <button
                   onClick={generateAdvice}
-                  className="w-full bg-linear-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-bold py-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+                  disabled={disabled}
+                  className="w-full bg-linear-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-bold py-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   🤖 Get AI Sustainability Coach
                 </button>
               )}
-
 
               {/* AI Advice Section */}
               {aiAdvice && (
@@ -271,3 +328,4 @@ function CarbonForm() {
 }
 
 export default CarbonForm;
+

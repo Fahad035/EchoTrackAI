@@ -1,7 +1,14 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+
+import { useAuth } from "../context/AuthContext";
+
+
+
 
 const navLinks = [
+
 	{ label: "Home", href: "/#home", external: true },
 	{ label: "Calculator", href: "/#calculator", external: true },
 	{ label: "Dashboard", href: "/dashboard" },
@@ -12,11 +19,23 @@ const navLinks = [
 function Navbar() {
 	const [open, setOpen] = useState(false);
 	const location = useLocation();
+	const navigate = useNavigate();
+
+	const { user, logout } = useAuth();
 
 	const closeMenu = () => setOpen(false);
+	const handleLogout = async () => {
+		await logout();
+		navigate("/");
+	};
 
 	const isActive = (href) => {
-		if (href.startsWith("/#")) return location.pathname === "/";
+		if (!href) return false;
+
+		if (href.startsWith("/#")) {
+			return location.pathname === "/";
+		}
+
 		return location.pathname === href;
 	};
 
@@ -33,46 +52,71 @@ function Navbar() {
 					</div>
 				</Link>
 
-				<div className="hidden items-center gap-4 lg:flex">
-					{navLinks.map((link) => {
-						const active = isActive(link.href);
-						const linkClasses = `group relative px-3 py-2 text-sm font-semibold transition-all duration-300 hover:text-white ${active ? "text-white" : "text-emerald-300/80"
-							}`;
+				{!user ? (
+					<div className="hidden items-center gap-3 lg:flex">
+						<Link
+							to="/login"
+							className="rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-white transition hover:bg-emerald-600"
+						>
+							Login
+						</Link>
 
-						const content = (
-							<>
-								<span className="relative z-10">{link.label}</span>
-								{/* Gradient hover background */}
-								<span className="absolute inset-0 -z-10 scale-90 rounded-xl bg-linear-to-r from-emerald-500/20 to-cyan-500/20 opacity-0 blur-sm transition-all duration-300 group-hover:scale-110 group-hover:opacity-100" />
-								{/* Active indicator dot */}
-								{active && (
-									<span className="absolute -bottom-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.8)]" />
-								)}
-							</>
-						);
-
-						return link.external ? (
-							<a key={link.label} href={link.href} className={linkClasses}>
-								{content}
-							</a>
-						) : (
-							<Link key={link.label} to={link.href} className={linkClasses}>
-								{content}
+						<Link
+								to="/signup"
+								className="rounded-xl bg-white/10 px-5 py-3 font-semibold text-white transition hover:bg-white/20 border border-white/10"
+							>
+								Signup
 							</Link>
-						);
-					})}
-				</div>
+					</div>
+				) : (
+					<>
+						<div className="hidden items-center gap-4 lg:flex">
+							{navLinks.map((link) => {
+								const active = isActive(link.href);
+								const linkClasses = `group relative px-3 py-2 text-sm font-semibold transition-all duration-300 hover:text-white ${active ? "text-white" : "text-emerald-300/80"
+									}`;
 
-				<div className="hidden lg:block">
-					<Link
-						to="/dashboard"
-						className="btn btn-primary relative overflow-hidden font-bold text-emerald-500 transition-all duration-300 hover:text-white hover:shadow-lg hover:shadow-emerald-500/25 active:scale-95"
-					>
-						<span className="relative z-10">Start Tracking</span>
-						{/* Button gradient hover effect */}
-						<span className="absolute inset-0 z-0 bg-linear-to-r from-emerald-500 to-cyan-500 opacity-0 transition-opacity duration-300 hover:opacity-100" />
-					</Link>
-				</div>
+								const content = (
+									<>
+										<span className="relative z-10">{link.label}</span>
+										{/* Gradient hover background */}
+										<span className="absolute inset-0 -z-10 scale-90 rounded-xl bg-linear-to-r from-emerald-500/20 to-cyan-500/20 opacity-0 blur-sm transition-all duration-300 group-hover:scale-110 group-hover:opacity-100" />
+										{/* Active indicator dot */}
+										{active && (
+											<span className="absolute -bottom-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.8)]" />
+										)}
+									</>
+								);
+
+								return link.external ? (
+									<a key={link.label} href={link.href} className={linkClasses}>
+										{content}
+									</a>
+								) : (
+									<Link key={link.label} to={link.href} className={linkClasses}>
+										{content}
+									</Link>
+								);
+							})}
+						</div>
+
+						<div className="hidden items-center gap-3 lg:flex">
+							<Link
+								to="/dashboard"
+								className="btn btn-primary relative overflow-hidden font-bold text-emerald-500"
+							>
+								<span className="relative z-10">Dashboard</span>
+							</Link>
+
+							<button
+								onClick={handleLogout}
+								className="rounded-xl bg-red-500 px-5 py-3 font-semibold text-white transition hover:bg-red-600"
+							>
+								Logout
+							</button>
+						</div>
+					</>
+				)}
 
 				<button
 					type="button"
@@ -93,49 +137,76 @@ function Navbar() {
 				className={`lg:hidden overflow-hidden border-t border-white/10 bg-slate-950/95 px-4 transition-all duration-300 ${open ? "max-h-128 py-4 opacity-100" : "max-h-0 py-0 opacity-0"}`}
 			>
 				<div className="mx-auto flex max-w-7xl flex-col gap-3">
-					{navLinks.map((link, index) => {
-						const active = isActive(link.href);
-						const mobileClasses = `flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition-all duration-300 hover:bg-white/10 ${active ? "border-emerald-500/50 bg-emerald-500/10 text-white" : "text-white/80"
-							}`;
-
-						const content = (
-							<>
-								<span>{link.label}</span>
-								{active && <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />}
-							</>
-						);
-
-						return link.external ? (
-							<a
-								key={link.label}
-								href={link.href}
-								onClick={closeMenu}
-								className={mobileClasses}
-								style={{ animationDelay: `${index * 60}ms` }}
-							>
-								{content}
-							</a>
-						) : (
+					{!user ? (
+						<>
 							<Link
-								key={link.label}
-								to={link.href}
+								to="/login"
 								onClick={closeMenu}
-								className={mobileClasses}
-								style={{ animationDelay: `${index * 60}ms` }}
+								className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 hover:bg-white/10"
 							>
-								{content}
+								<span className="flex items-center justify-between">
+									<span>Login</span>
+								</span>
 							</Link>
-						);
-					})}
 
-					<Link
-						to="/dashboard"
-						onClick={closeMenu}
-						className="btn btn-primary relative mt-1 w-full justify-center overflow-hidden"
-					>
-						<span className="relative z-10">Open Dashboard</span>
-						<span className="absolute inset-0 z-0 bg-linear-to-r from-emerald-500 to-cyan-500 opacity-0 transition-opacity duration-300 hover:opacity-100" />
-					</Link>
+							<Link
+								to="/signup"
+								onClick={closeMenu}
+								className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white transition-all duration-300 hover:bg-white/10"
+							>
+								<span className="flex items-center justify-between">
+									<span>Signup</span>
+								</span>
+							</Link>
+						</>
+					) : (
+						<>
+							{navLinks.map((link, index) => {
+								const active = isActive(link.href);
+								const mobileClasses = `flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition-all duration-300 hover:bg-white/10 ${active ? "border-emerald-500/50 bg-emerald-500/10 text-white" : "text-white/80"
+										}`;
+
+								const content = (
+									<>
+										<span>{link.label}</span>
+										{active && <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />}
+									</>
+								);
+
+								return link.external ? (
+									<a
+										key={link.label}
+										href={link.href}
+										onClick={closeMenu}
+										className={mobileClasses}
+										style={{ animationDelay: `${index * 60}ms` }}
+									>
+										{content}
+									</a>
+								) : (
+									<Link
+										key={link.label}
+										to={link.href}
+										onClick={closeMenu}
+										className={mobileClasses}
+										style={{ animationDelay: `${index * 60}ms` }}
+									>
+										{content}
+									</Link>
+								);
+							})}
+
+							<button
+								onClick={() => {
+									handleLogout();
+									closeMenu();
+								}}
+								className="mt-2 rounded-2xl bg-red-500 px-4 py-3 text-white"
+							>
+								Logout
+							</button>
+						</>
+					)}
 				</div>
 			</div>
 		</nav>
@@ -143,3 +214,4 @@ function Navbar() {
 }
 
 export default Navbar;
+

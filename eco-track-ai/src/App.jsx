@@ -1,64 +1,93 @@
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { loginAnonymous } from "./firebase/auth";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Awareness from "./pages/Awareness";
 import Pledge from "./pages/Pledge";
-import { getAuth } from "firebase/auth";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
-
-
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
+
 
   useEffect(() => {
     const storedTheme = localStorage.getItem("eco-track-theme");
     const systemPrefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
     const initialTheme = storedTheme || (systemPrefersLight ? "light" : "dark");
 
+    // Apply to entire app
     document.documentElement.dataset.theme = initialTheme;
     localStorage.setItem("eco-track-theme", initialTheme);
 
-    // Firebase Anonymous Login
-    const auth = getAuth();
+    // Keep in sync if system preference changes and user hasn't chosen explicitly
+    const mql = window.matchMedia("(prefers-color-scheme: light)");
+    const handleChange = () => {
+      const currentStored = localStorage.getItem("eco-track-theme");
+      if (!currentStored) {
+        const nextTheme = mql.matches ? "light" : "dark";
+        document.documentElement.dataset.theme = nextTheme;
+        localStorage.setItem("eco-track-theme", nextTheme);
+      }
+    };
 
-    if (!auth.currentUser) {
-      loginAnonymous().catch((error) => {
-        console.error("Authentication failed:", error);
-      });
+    if (typeof mql?.addEventListener === "function") {
+      mql.addEventListener("change", handleChange);
+    } else {
+      // Safari fallback
+      mql.addListener(handleChange);
     }
+
+    return () => {
+      if (typeof mql?.removeEventListener === "function") {
+        mql.removeEventListener("change", handleChange);
+      } else {
+        mql.removeListener(handleChange);
+      }
+    };
   }, []);
 
   return (
-    <BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
 
-      <Routes>
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/"
-          element={<Home />}
-        />
+          <Route
+            path="/awareness"
+            element={
+              <ProtectedRoute>
+                <Awareness />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/dashboard"
-          element={<Dashboard />}
-        />
+          <Route
+            path="/pledge"
+            element={
+              <ProtectedRoute>
+                <Pledge />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/awareness"
-          element={<Awareness />}
-        />
-
-        <Route
-          path="/pledge"
-          element={<Pledge />}
-        />
-
-      </Routes>
-
-    </BrowserRouter>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
