@@ -131,8 +131,6 @@ function HomeContent() {
 
       {/* Keep your existing calculator/contact/footer */}
       <CarbonForm />
-      <Contact />
-
       {/* Feature cards */}
       <section id="features" aria-label="EcoTrack AI features" className="py-20 bg-linear-to-br from-slate-950 via-slate-900 to-emerald-950">
         <div className="mx-auto max-w-6xl px-4">
@@ -279,6 +277,8 @@ function HomeContent() {
         </div>
       </section>
 
+      {/* Keep your existing calculator/contact/footer */}
+      <Contact />
       <Footer />
     </>
   );
